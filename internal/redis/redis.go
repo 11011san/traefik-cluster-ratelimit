@@ -37,6 +37,7 @@ func NewClient(addr string, db uint, authpassword string, connectionTimeout time
 	maxActive := MAX_ACTIVE
 
 	if maxActive <= 0 {
+		fmt.Println("maxActive must be greater than 0")
 		return nil, errors.New("maxActive must be greater than 0")
 	}
 
@@ -71,6 +72,7 @@ func (r *ClientImpl) newConn() (net.Conn, error) {
 			return nil, err
 		}
 		if resp.Success != RESP_SUCCESS || resp.Result != "OK" {
+			fmt.Printf("not able to authenticate (%s)\n", resp.Result)
 			return nil, fmt.Errorf("not able to authenticate (%s)", resp.Result)
 		}
 	}
@@ -79,6 +81,7 @@ func (r *ClientImpl) newConn() (net.Conn, error) {
 		return nil, err
 	}
 	if resp.Success != RESP_SUCCESS || resp.Result != "OK" {
+		fmt.Printf("not able to select db %d (%s)\n", r.db, resp.Result)
 		return nil, fmt.Errorf("not able to select db %d (%s)", r.db, resp.Result)
 	}
 	return conn, nil
@@ -98,6 +101,7 @@ func (r *ClientImpl) get() (net.Conn, error) {
 // Put returns a connection back to the pool
 func (r *ClientImpl) put(conn net.Conn) error {
 	if conn == nil {
+		fmt.Println("nil connection cannot be added to the pool")
 		return errors.New("nil connection cannot be added to the pool")
 	}
 
@@ -152,12 +156,14 @@ func sendCommand(conn net.Conn, connectionTimeout time.Duration, args ...string)
 	// set read and write deadline
 	err := conn.SetDeadline(time.Now().Add(connectionTimeout))
 	if err != nil {
+		fmt.Println("error setting deadline:", err)
 		return nil, fmt.Errorf("error setting deadline: %w", err)
 	}
 
 	// Send the command
 	_, err = conn.Write([]byte(command))
 	if err != nil {
+		fmt.Println("error sending command:", err)
 		return nil, fmt.Errorf("error sending command: %w", err)
 	}
 
@@ -166,6 +172,7 @@ func sendCommand(conn net.Conn, connectionTimeout time.Duration, args ...string)
 
 	elt, err := readElement(reader)
 	if err != nil {
+		fmt.Println("error reading response:", err)
 		return nil, fmt.Errorf("error reading response: %w", err)
 	}
 	if elt.ElementType == ELEMENT_SIMPLE {
@@ -309,12 +316,14 @@ func (r *ClientImpl) Ping() error {
 	res, err := sendCommand(conn, r.connectionTimeout, "PING")
 	if err != nil {
 		// let's reset the conn
+		fmt.Println("send ping command failed")
 		conn.Close()
 		conn = nil
 		return err
 	}
 
 	if res.Success != RESP_SUCCESS && res.Result != "PONG" {
+		fmt.Println("PING result error:", res.Result)
 		return fmt.Errorf("PING result error: %s", res.Result)
 	}
 	return nil
@@ -330,12 +339,14 @@ func (r *ClientImpl) Del(key string) error {
 	res, err := sendCommand(conn, r.connectionTimeout, "DEL", key)
 	if err != nil {
 		// let's reset the conn
+		fmt.Println("send del command failed")
 		conn.Close()
 		conn = nil
 		return err
 	}
 
 	if res.Success != RESP_SUCCESS && res.Result != "OK" {
+		fmt.Println("DEL result error:", res.Result)
 		return fmt.Errorf("DEL result error: %s", res.Result)
 	}
 	return nil

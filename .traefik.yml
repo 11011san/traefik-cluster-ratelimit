@@ -2,9 +2,9 @@ displayName: Traefik Cluster Rate Limiter
 type: middleware
 iconPath: .assets/speedlimit.png
 
-import: github.com/nzin/traefik-cluster-ratelimit
+import: github.com/11011san/traefik-cluster-ratelimit
 
-summary: 'Traefik Cluster Rate Limiter: the rate limit state is stored in a central Redis server, allowing to have a rate limit shared across Traefik node/kubernetes pods'
+summary: 'Fork from https://github.com/nzin/traefik-cluster-ratelimit go there Traefik Cluster Rate Limiter: the rate limit state is stored in a central Redis server, allowing to have a rate limit shared across Traefik node/kubernetes pods'
 
 testData:
   average: 100

@@ -58,8 +58,10 @@ func (rs *ScriptImpl) Run(keys []string, args ...interface{}) (interface{}, erro
 			return res.Results, nil
 		}
 		if res.Success == RESP_FAIL || strings.HasPrefix(res.Result.(string), "NOSCRIPT") {
+			fmt.Println("not able to run the script:", res.Result)
 			return "", fmt.Errorf("not able to run the script: %s", res.Result)
 		} else {
+			fmt.Println("not able toget script result:", res.Success)
 			return "", fmt.Errorf("not able toget script result: %d", res.Success)
 		}
 	}
@@ -77,6 +79,7 @@ func (rs *ScriptImpl) Run(keys []string, args ...interface{}) (interface{}, erro
 		if len(res.Result.(string)) == 40 {
 			rs.scriptSha = res.Result.(string)
 		} else {
+			fmt.Println("not able to load script:", res.Result)
 			return "", fmt.Errorf("not able to load script: %s", res.Result)
 		}
 	}
@@ -101,8 +104,10 @@ func (rs *ScriptImpl) Run(keys []string, args ...interface{}) (interface{}, erro
 		return res.Results, nil
 	}
 	if res.Success == RESP_FAIL || strings.HasPrefix(res.Result.(string), "NOSCRIPT") {
+		fmt.Println("not able to run the script:", res.Result)
 		return "", fmt.Errorf("not able to run the script: %s", res.Result)
 	} else {
+		fmt.Println("not able toget script result:", res.Success)
 		return "", fmt.Errorf("not able toget script result: %d", res.Success)
 	}
 }

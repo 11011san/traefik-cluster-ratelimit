@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nzin/traefik-cluster-ratelimit/internal/ip"
+	"github.com/11011san/traefik-cluster-ratelimit/internal/ip"
 )
 
 // IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP.
@@ -78,26 +78,25 @@ func GetSourceExtractor(sourceMatcher *SourceCriterion) (SourceExtractor, error)
 		}
 	}
 
-	//	logger := log.Ctx(ctx)
 	if sourceMatcher.IPStrategy != nil {
 		strategy, err := sourceMatcher.IPStrategy.Get()
 		if err != nil {
 			return nil, err
 		}
 
-		//		logger.Debug().Msg("Using IPStrategy")
+		fmt.Println("Using IPStrategy")
 		return ExtractorFunc(func(req *http.Request) (string, int64, error) {
 			return strategy.GetIP(req), 1, nil
 		}), nil
 	}
 
 	if sourceMatcher.RequestHeaderName != "" {
-		//logger.Debug().Msg("Using RequestHeaderName")
+		fmt.Println("Using RequestHeaderName")
 		return NewExtractor(fmt.Sprintf("request.header.%s", sourceMatcher.RequestHeaderName))
 	}
 
 	if sourceMatcher.RequestHost {
-		//logger.Debug().Msg("Using RequestHost")
+		fmt.Println("Using RequestHost")
 		return NewExtractor("request.host")
 	}
 

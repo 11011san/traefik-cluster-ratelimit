@@ -1,4 +1,4 @@
-module github.com/nzin/traefik-cluster-ratelimit
+module github.com/11011san/traefik-cluster-ratelimit
 
 go 1.19
 

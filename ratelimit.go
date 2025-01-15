@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/nzin/traefik-cluster-ratelimit/internal/redis"
-	"github.com/nzin/traefik-cluster-ratelimit/internal/utils"
+	"github.com/11011san/traefik-cluster-ratelimit/internal/redis"
+	"github.com/11011san/traefik-cluster-ratelimit/internal/utils"
 )
 
 // Config the plugin configuration.
